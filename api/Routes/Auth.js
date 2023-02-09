@@ -10,12 +10,12 @@ router.post('/users', [
     body('email', 'Enter a valid email').isEmail(),
     body('password', 'Enter a valid password with min length 5').isLength({ min: 5 })
 ], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
         // search for duplicate user with email
         let user = await User.findOne({ email: req.body.email });
         if (user) {
@@ -40,10 +40,49 @@ router.post('/users', [
         };
 
         const authToken = jwt.sign(data, process.env.JWT_SECRET);
-
         res.json({ authToken });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "An error occured while processing your request" });
     }
-    catch (error) {
+});
+
+router.post('/login', [
+    body('email', 'Enter a valid email').isEmail(),
+    body('password', 'Enter a valid password with min length 5').isLength({ min: 5 })
+], async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { email, password } = req.body;
+
+        // search for user with email
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ error: "Invalid Credentials" });
+        }
+
+        // match the password
+        const passwordCompare = await bcrypt.compare(password, user.password);
+        if (!passwordCompare) {
+            return res.status(400).json({ error: "Invalid Credentials" });
+        }
+
+        // set user detail to be added with auth token
+        const data = {
+            user: {
+                id: user.id
+            }
+        };
+
+        // generate auth token
+        const authToken = jwt.sign(data, process.env.JWT_SECRET);
+        res.json({ authToken });
+
+    } catch (error) {
         console.error(error.message);
         res.status(500).json({ error: "An error occured while processing your request" });
     }
