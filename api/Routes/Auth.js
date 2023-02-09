@@ -3,6 +3,7 @@ const User = require('../Models/Users');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 router.post('/users', [
     body('name', 'Enter a valid name').isLength({ min: 3 }),
@@ -32,7 +33,15 @@ router.post('/users', [
             password: encryptedPassword,
         });
 
-        res.json({ user });
+        const data = {
+            user: {
+                id: user.id
+            }
+        };
+
+        const authToken = jwt.sign(data, process.env.JWT_SECRET);
+
+        res.json({ authToken });
     }
     catch (error) {
         console.error(error.message);
