@@ -65,4 +65,19 @@ router.put('/:noteId', FetchUser, [
     }
 });
 
+router.delete('/:noteId', FetchUser, async (req, res) => {
+    try {
+        let note = await Note.findOne({ _id: req.params.noteId, user: req.user.id });
+        if (!note) {
+            return res.status(404).json({ error: "Note not found" });
+        }
+
+        note = await Note.findByIdAndDelete(req.params.noteId);
+
+        return res.json({ "Success": "Your note has been delete" });
+    } catch (error) {
+        return res.status(500).json({ error: "An error occured while processing your request" });
+    }
+});
+
 module.exports = router;
