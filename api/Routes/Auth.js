@@ -4,6 +4,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const FetchUser = require('../middlewares/FetchUser');
 
 router.post('/users', [
     body('name', 'Enter a valid name').isLength({ min: 3 }),
@@ -40,10 +41,10 @@ router.post('/users', [
         };
 
         const authToken = jwt.sign(data, process.env.JWT_SECRET);
-        res.json({ authToken });
+        return res.json({ authToken });
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ error: "An error occured while processing your request" });
+        return res.status(500).json({ error: "An error occured while processing your request" });
     }
 });
 
@@ -80,11 +81,26 @@ router.post('/login', [
 
         // generate auth token
         const authToken = jwt.sign(data, process.env.JWT_SECRET);
-        res.json({ authToken });
+        return res.json({ authToken });
 
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ error: "An error occured while processing your request" });
+        return res.status(500).json({ error: "An error occured while processing your request" });
+    }
+});
+
+router.get('/users', FetchUser, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        let user = await User.findById(userId).select("-password");
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        return res.json({ user });
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).json({ error: "An error occured while processing your request" });
     }
 });
 
