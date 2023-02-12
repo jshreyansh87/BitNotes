@@ -26,10 +26,15 @@ const NoteState = (props) => {
 
     const [notes, setNotes] = useState(initialNotes);
 
+    // Get Notes
+    const getNotes = () => {
+        // TODO: API Call
+    }
+
     // Add Note
     const addNote = (title, description, tag) => {
         const note = {
-            "_id": "63e8c8ddbf72a40b33e6437a",
+            "_id": (Math.random() * (1000 - 1) + 1).toString(),
             "user": "63e69690195c60cfc8507bdf",
             "title": title,
             "description": description,
@@ -43,17 +48,19 @@ const NoteState = (props) => {
     }
 
     // Edit Note
-    const editNote = () => {
-
+    const editNote = (id, title, description, tag) => {
+        // TODO: API Call
     }
 
     // Delete Note
-    const deleteNote = () => {
-        
+    const deleteNote = (id) => {
+        // TODO: API Call
+        const updatedNotes = notes.filter((note) => { return note._id !== id });
+        setNotes(updatedNotes);
     }
 
     return (
-        <NoteContext.Provider value={{notes, addNote, editNote, deleteNote}}>
+        <NoteContext.Provider value={{ notes, addNote, editNote, deleteNote }}>
             {props.children}
         </NoteContext.Provider>
     )

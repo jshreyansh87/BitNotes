@@ -5,7 +5,7 @@ const AddNoteForm = () => {
     const context = useContext(noteContext);
     const { addNote } = context;
 
-    const [note, setNote] = useState({title: "", description: "", tag: "Default"});
+    const [note, setNote] = useState({ title: "", description: "", tag: "Default" });
 
     const handleAddNote = (e) => {
         e.preventDefault();
@@ -13,7 +13,7 @@ const AddNoteForm = () => {
     }
 
     const onChange = (e) => {
-        setNote({...note, [e.target.name]: e.target.value});
+        setNote({ ...note, [e.target.name]: e.target.value });
     }
 
     return (
