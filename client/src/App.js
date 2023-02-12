@@ -1,6 +1,6 @@
 import './App.css';
 import {
-  BrowserRouter,
+  BrowserRouter as Router,
   Routes,
   Route
 } from "react-router-dom";
@@ -8,20 +8,25 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
 import Error from './components/Error';
+import NoteState from './context/notes/NoteState';
 
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="*" element={<Error />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <>
+      <NoteState>
+        <Router>
+          <Navbar />
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="about" element={<About />} />
+              <Route path="*" element={<Error />} />
+            </Routes>
+          </div>
+        </Router>
+      </NoteState>
+    </>
   );
 }
 
