@@ -1,10 +1,12 @@
 const express = require('express')
 const ConnectToDatabase = require('./DatabaseContext');
+const cors = require('cors');
 
 ConnectToDatabase();
-const app = express()
-const port = 5000
+const app = express();
+const port = 5000;
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
