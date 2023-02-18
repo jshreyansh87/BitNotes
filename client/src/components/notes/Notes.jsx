@@ -6,7 +6,6 @@ import NoteItem from './NoteItem';
 const Notes = () => {
     const context = useContext(noteContext);
     const { notes, getNotes } = context;
-    // getNotes();
 
     useEffect(() => {
         getNotes();
